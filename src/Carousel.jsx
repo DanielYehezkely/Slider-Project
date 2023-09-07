@@ -1,38 +1,56 @@
 import React, { useState } from 'react'
-import {shortList, list, longList} from './data'
-import {FaQuoteRight} from 'react-icons/fa'
-import {FiChevronLeft, FiChevronRight} from 'react-icons/fi'
+import { shortList, list, longList } from './data'
+import { FaQuoteRight } from 'react-icons/fa'
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 
 const Carousel = () => {
     const [people, setPeople] = useState(list);
-
-    const prevSLide = () =>{
+    const [currentPerson, setCurrentPerson] = useState(0);
+    const prevSLide = () => {
+        setCurrentPerson((oldPerson) => {
+            const result = (oldPerson - 1 + people.length) % people.length
+            return result;
+        })
     }
 
-    const nextSLide = () =>{
+    const nextSLide = () => {
+
+        setCurrentPerson((oldPerson) => {
+            const result = (oldPerson + 1) % people.length
+            return result;
+        })
     }
-  return (
-    <section className='slider-container'>
-        {people.map((person, personIndex) => {
-            const {id, image,name, title, quote} = person;
-            return <article className='slide next-slide' style={{transform:`translateX(${100 * personIndex}%)`}} key={id}>
-                <img src={image} alt={name} className='person-img'/>
-                <h5 className='name'>{name}</h5>
-                <p className='title'>{title}</p>
-                <p className='text'>{quote}</p>
-                <FaQuoteRight className='icon'/>
-            </article>
-        })}
+    return (
+        <section className='slider-container'>
+            {people.map((person, personIndex) => {
+                const { id, image, name, title, quote } = person;
+                return <article
+                    className='slide next-slide'
+                    style={
+                        {
+                            transform: `translateX(${100 * (personIndex - currentPerson)}%)`,
+                            opacity: personIndex === currentPerson ? 1 : 0,
+                            visibility: personIndex === currentPerson ? 'visible' : 'hidden'
+                        }}
+                    key={id}
+                >
+                    <img src={image} alt={name} className='person-img' />
+                    <h5 className='name'>{name}</h5>
+                    <p className='title'>{title}</p>
+                    <p className='text'>{quote}</p>
+                    <FaQuoteRight className='icon' />
+                </article>
+            })}
 
-<button type='button' className='prev' onClick={prevSLide}>
-    <FiChevronLeft/>
-</button>
-<button type='button' className='next' onClick={nextSLide}>
-    <FiChevronRight/>
-</button>
+            <button type='button' className='prev' onClick={prevSLide}>
+                <FiChevronLeft />
+            </button>
+            <button type='button' className='next' onClick={nextSLide}>
+                <FiChevronRight />
+            </button>
 
-    </section>
-  )
+        </section>
+    )
 }
 
 export default Carousel
